@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Document Classifier — Built From Scratch</title>
+<meta name="description" content="An original from-scratch build of a document classifier: sort documents into categories from their text alone — the workhorse NLP task, built end to end." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --accent:#059669; --accent-soft:#e6f6f0; --ink:#0d2019; --muted:#46615a;
+    --line:#d2ebe1; --bg:#f6fcfa; --card:#ffffff;
+    --serif:'Fraunces',Georgia,serif; --sans:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:860px;margin:0 auto;padding:0 28px}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  code{font-family:var(--mono);font-size:.86em;background:var(--accent-soft);padding:.1em .4em;border-radius:4px;color:#047857}
+  h1,h2,h3{font-family:var(--serif);font-weight:500;line-height:1.15;letter-spacing:-.01em}
+  header.hero{padding:88px 0 56px;border-bottom:1px solid var(--line)}
+  .eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin:0 0 22px}
+  h1{font-size:clamp(2.6rem,6vw,4.1rem);margin:0 0 18px}
+  .lede{font-size:1.22rem;color:var(--muted);max-width:62ch;margin:0 0 28px}
+  .meta{display:flex;flex-wrap:wrap;gap:10px;font-size:.82rem}
+  .chip{font-family:var(--mono);font-size:.72rem;letter-spacing:.04em;border:1px solid var(--line);border-radius:999px;padding:5px 12px;color:var(--muted);background:var(--card)}
+  section{padding:54px 0;border-bottom:1px solid var(--line)}
+  .kicker{font-family:var(--mono);font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+  h2{font-size:clamp(1.7rem,3.4vw,2.3rem);margin:0 0 20px}
+  h3{font-size:1.2rem;margin:0 0 6px}
+  p{margin:0 0 18px;max-width:68ch}
+  .muted{color:var(--muted)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:8px}
+  .tool{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .tool .t{font-family:var(--mono);font-size:.78rem;color:var(--accent);letter-spacing:.04em;margin-bottom:8px}
+  .tool h3{font-size:1.05rem;font-family:var(--sans);font-weight:600;margin-bottom:6px}
+  .tool p{font-size:.92rem;color:var(--muted);margin:0}
+  ol.flow{counter-reset:s;list-style:none;padding:0;margin:24px 0 0}
+  ol.flow li{position:relative;padding:18px 0 18px 56px;border-top:1px solid var(--line)}
+  ol.flow li:before{counter-increment:s;content:counter(s,decimal-leading-zero);position:absolute;left:0;top:18px;font-family:var(--mono);font-size:.8rem;color:var(--accent);border:1px solid var(--line);border-radius:8px;width:38px;height:38px;display:grid;place-items:center;background:var(--card)}
+  ol.flow li h3{font-family:var(--sans);font-size:1.02rem;font-weight:600;margin:0 0 4px}
+  ol.flow li p{margin:0;font-size:.93rem;color:var(--muted)}
+  .callout{background:var(--accent-soft);border:1px solid #b9e2d2;border-radius:14px;padding:24px 26px;margin-top:8px}
+  .callout p:last-child{margin:0}
+  ul.learn{list-style:none;padding:0;margin:8px 0 0}
+  ul.learn li{padding:14px 0 14px 30px;border-top:1px solid var(--line);position:relative;color:var(--muted);max-width:68ch}
+  ul.learn li:before{content:"→";position:absolute;left:0;color:var(--accent);font-family:var(--mono)}
+  ul.learn li b{color:var(--ink);font-weight:600}
+  .price{display:flex;align-items:baseline;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 26px;margin-top:8px}
+  .price .n{font-family:var(--serif);font-size:2.6rem;color:var(--accent);line-height:1}
+  .price .l{color:var(--muted);font-size:.95rem}
+  footer{padding:48px 0 80px}
+  .credit{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px}
+  .credit .k{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  footer .fine{font-size:.8rem;color:var(--muted);margin-top:22px;text-align:center}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">From-Scratch Build · Natural Language Processing</p>
+    <h1>Document Classifier</h1>
+    <p class="lede">Drop in a stack of documents — emails, articles, support tickets — and get each one sorted into its category, from the words alone. It's the workhorse task of applied NLP, and I rebuilt it from scratch end to end because everything else in text understanding stands on getting this one right.</p>
+    <div class="meta">
+      <span class="chip">Python</span><span class="chip">TF-IDF</span><span class="chip">Embeddings</span>
+      <span class="chip">Classification</span><span class="chip">scikit-learn</span><span class="chip">NLP</span>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">What it is</p>
+    <h2>The foundational text task, done properly</h2>
+    <p>Document classification sounds mundane until you build it: take free-form text of any length and assign it a label — spam or not, news topic, ticket department, sentiment. Almost every practical NLP system has this shape somewhere inside it, which is exactly why it's worth rebuilding carefully rather than importing.</p>
+    <p>This build walks the full arc, deliberately. It starts from the classic, interpretable approach — turn text into TF-IDF vectors and train a linear classifier — and then contrasts it with dense embeddings, so you feel the trade-off between a transparent model you can read and a stronger one you mostly can't.</p>
+    <div class="price">
+      <div class="n">bag → vector</div>
+      <div class="l">the core move: turning unbounded, unstructured text into a fixed-length vector a classifier can learn from.</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">The stack</p>
+    <h2>From raw text to a label</h2>
+    <p class="muted">Two representations, one honest comparison.</p>
+    <div class="grid">
+      <div class="tool"><div class="t">data</div><h3>Labelled corpus</h3><p>Documents tagged with their categories, split into train and test — the ground truth.</p></div>
+      <div class="tool"><div class="t">clean</div><h3>Tokenisation</h3><p>Lowercase, strip noise, split into tokens and remove stopwords so the signal stands out.</p></div>
+      <div class="tool"><div class="t">classic</div><h3>TF-IDF</h3><p>Weight words by how distinctive they are to a document — interpretable and surprisingly strong.</p></div>
+      <div class="tool"><div class="t">modern</div><h3>Embeddings</h3><p>Dense vectors that capture meaning beyond exact words — the contrast case to TF-IDF.</p></div>
+      <div class="tool"><div class="t">model</div><h3>Linear classifier</h3><p>Logistic regression or SVM — fast, solid baselines whose weights you can actually read.</p></div>
+      <div class="tool"><div class="t">evaluate</div><h3>Precision / recall / F1</h3><p>Per-class metrics and a confusion matrix — accuracy alone lies on imbalanced data.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">Architecture</p>
+    <h2>How a document is classified</h2>
+    <p>Every document follows the same represent-then-decide pipeline:</p>
+    <ol class="flow">
+      <li><h3>Preprocess</h3><p>Tokenise and clean the raw text into a consistent form.</p></li>
+      <li><h3>Vectorise</h3><p>Turn the document into a fixed-length vector — TF-IDF or embedding.</p></li>
+      <li><h3>Train</h3><p>Fit a classifier on the labelled training vectors.</p></li>
+      <li><h3>Predict</h3><p>Assign a category to each unseen document.</p></li>
+      <li><h3>Evaluate</h3><p>Score per-class performance and read the confusion matrix for blind spots.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">Reflection</p>
+    <h2>What rebuilding it taught me</h2>
+    <ul class="learn">
+      <li><b>TF-IDF is hard to beat.</b> On many real tasks a simple, readable linear model on TF-IDF is shockingly close to the fancy alternative — and you can explain it.</li>
+      <li><b>Preprocessing is where accuracy hides.</b> Tokenisation and stopword choices move the score more than the model swap often does.</li>
+      <li><b>Interpretability is a feature.</b> Being able to read which words drove a decision is worth real accuracy in anything that touches people.</li>
+      <li><b>Accuracy is a trap on imbalance.</b> A classifier can score 95% and be useless; per-class F1 keeps you honest.</li>
+      <li><b>Master this, generalise everywhere.</b> Spam, topics, sentiment, routing — once the pipeline is yours, the task just changes labels.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="credit">
+      <div class="k">About this build</div>
+      <p style="margin:0">An original, from-scratch build by <b>Andrea</b> — written to learn the foundational text-classification pipeline end to end: tokenisation, TF-IDF and embeddings, linear classifiers, and rigorous per-class evaluation. Plain HTML/CSS, deployed on GitHub Pages.</p>
+    </div>
+    <p class="fine">Built from scratch by Andrea · one of an ongoing series of learning builds.</p>
+  </div>
+</footer>
+</body>
+</html>
