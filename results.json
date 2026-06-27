@@ -1,0 +1,112 @@
+{
+  "dataset": "20 Newsgroups",
+  "categories": [
+    "comp.sys.mac.hardware",
+    "rec.autos",
+    "sci.med",
+    "sci.space",
+    "talk.politics.guns"
+  ],
+  "n_train": 2905,
+  "n_test": 1935,
+  "models": {
+    "tfidf_logreg": {
+      "accuracy": 0.8490956072351421,
+      "macro_f1": 0.8505912610419321,
+      "report": {
+        "comp.sys.mac.hardware": {
+          "precision": 0.9340659340659341,
+          "recall": 0.8831168831168831,
+          "f1-score": 0.9078771695594126,
+          "support": 385.0
+        },
+        "rec.autos": {
+          "precision": 0.7318548387096774,
+          "recall": 0.9166666666666666,
+          "f1-score": 0.8139013452914798,
+          "support": 396.0
+        },
+        "sci.med": {
+          "precision": 0.8753387533875339,
+          "recall": 0.8156565656565656,
+          "f1-score": 0.8444444444444444,
+          "support": 396.0
+        },
+        "sci.space": {
+          "precision": 0.8650137741046832,
+          "recall": 0.7969543147208121,
+          "f1-score": 0.8295904887714664,
+          "support": 394.0
+        },
+        "talk.politics.guns": {
+          "precision": 0.8833819241982507,
+          "recall": 0.8324175824175825,
+          "f1-score": 0.8571428571428571,
+          "support": 364.0
+        },
+        "accuracy": 0.8490956072351421,
+        "macro avg": {
+          "precision": 0.8579310448932158,
+          "recall": 0.8489624025157019,
+          "f1-score": 0.8505912610419321,
+          "support": 1935.0
+        },
+        "weighted avg": {
+          "precision": 0.8570700229929141,
+          "recall": 0.8490956072351421,
+          "f1-score": 0.8501789641301073,
+          "support": 1935.0
+        }
+      }
+    },
+    "scratch_multinomial_nb": {
+      "accuracy": 0.8744186046511628,
+      "macro_f1": 0.8757562885778561,
+      "report": {
+        "comp.sys.mac.hardware": {
+          "precision": 0.9605633802816902,
+          "recall": 0.8857142857142857,
+          "f1-score": 0.9216216216216216,
+          "support": 385.0
+        },
+        "rec.autos": {
+          "precision": 0.770042194092827,
+          "recall": 0.9217171717171717,
+          "f1-score": 0.8390804597701149,
+          "support": 396.0
+        },
+        "sci.med": {
+          "precision": 0.9373219373219374,
+          "recall": 0.8308080808080808,
+          "f1-score": 0.8808567603748326,
+          "support": 396.0
+        },
+        "sci.space": {
+          "precision": 0.875,
+          "recall": 0.8527918781725888,
+          "f1-score": 0.8637532133676092,
+          "support": 394.0
+        },
+        "talk.politics.guns": {
+          "precision": 0.8652291105121294,
+          "recall": 0.8818681318681318,
+          "f1-score": 0.8734693877551021,
+          "support": 364.0
+        },
+        "accuracy": 0.8744186046511628,
+        "macro avg": {
+          "precision": 0.8816313244417169,
+          "recall": 0.8745799096560518,
+          "f1-score": 0.8757562885778561,
+          "support": 1935.0
+        },
+        "weighted avg": {
+          "precision": 0.8814607202455362,
+          "recall": 0.8744186046511628,
+          "f1-score": 0.8755457812462112,
+          "support": 1935.0
+        }
+      }
+    }
+  }
+}

@@ -5,3 +5,13 @@ Thumbs.db
 node_modules/
 dist/
 build/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# Trained model artifact (reproduce with `python train.py`)
+model.joblib

@@ -57,6 +57,19 @@
   .credit{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px}
   .credit .k{font-family:var(--mono);font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
   footer .fine{font-size:.8rem;color:var(--muted);margin-top:22px;text-align:center}
+  table.metrics{width:100%;border-collapse:collapse;margin-top:8px;font-size:.95rem;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  table.metrics th,table.metrics td{text-align:left;padding:13px 18px;border-bottom:1px solid var(--line)}
+  table.metrics th{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:500}
+  table.metrics td.num{font-family:var(--mono);color:var(--accent);text-align:right}
+  table.metrics tr:last-child td{border-bottom:none}
+  table.metrics tr.best td{background:var(--accent-soft)}
+  figure.cm{margin:18px 0 0}
+  figure.cm img{width:100%;display:block;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+  figure.cm figcaption{font-size:.82rem;color:var(--muted);margin-top:10px}
+  .cats{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .cats .cat{font-family:var(--mono);font-size:.74rem;border:1px solid var(--line);border-radius:8px;padding:5px 10px;color:var(--muted);background:var(--card)}
+  pre.cmd{background:var(--ink);color:#dff5ec;border-radius:12px;padding:18px 20px;overflow-x:auto;font-family:var(--mono);font-size:.82rem;line-height:1.6;margin-top:8px}
+  pre.cmd .c{color:#7fd4b6}
 </style>
 </head>
 <body>
@@ -64,10 +77,10 @@
   <div class="wrap">
     <p class="eyebrow">From-Scratch Build · Natural Language Processing</p>
     <h1>Document Classifier</h1>
-    <p class="lede">Drop in a stack of documents — emails, articles, support tickets — and get each one sorted into its category, from the words alone. It's the workhorse task of applied NLP, and I rebuilt it from scratch end to end because everything else in text understanding stands on getting this one right.</p>
+    <p class="lede">Drop in a piece of text — a forum post, an article, a support ticket — and get it sorted into its category, from the words alone. It's the workhorse task of applied NLP, built end to end here on the real <b>20 Newsgroups</b> corpus: TF-IDF features, a logistic-regression baseline, and a Multinomial Naive Bayes I wrote from scratch in numpy to compare against it.</p>
     <div class="meta">
-      <span class="chip">Python</span><span class="chip">TF-IDF</span><span class="chip">Embeddings</span>
-      <span class="chip">Classification</span><span class="chip">scikit-learn</span><span class="chip">NLP</span>
+      <span class="chip">Python</span><span class="chip">TF-IDF</span><span class="chip">Naive Bayes</span>
+      <span class="chip">LogisticRegression</span><span class="chip">scikit-learn</span><span class="chip">20 Newsgroups</span>
     </div>
   </div>
 </header>
@@ -76,11 +89,14 @@
   <div class="wrap">
     <p class="kicker">What it is</p>
     <h2>The foundational text task, done properly</h2>
-    <p>Document classification sounds mundane until you build it: take free-form text of any length and assign it a label — spam or not, news topic, ticket department, sentiment. Almost every practical NLP system has this shape somewhere inside it, which is exactly why it's worth rebuilding carefully rather than importing.</p>
-    <p>This build walks the full arc, deliberately. It starts from the classic, interpretable approach — turn text into TF-IDF vectors and train a linear classifier — and then contrasts it with dense embeddings, so you feel the trade-off between a transparent model you can read and a stronger one you mostly can't.</p>
+    <p>Document classification sounds mundane until you build it: take free-form text of any length and assign it a label — spam or not, news topic, ticket department, sentiment. Almost every practical NLP system has this shape somewhere inside it, which is exactly why it's worth building carefully rather than importing.</p>
+    <p>This build takes a real corpus — a 5-category slice of <b>20 Newsgroups</b> — and turns each document into TF-IDF vectors, then trains two classifiers on identical features: a logistic-regression baseline, and a Multinomial Naive Bayes implemented from scratch in numpy. Both are scored on a held-out test split so the comparison is honest, and headers/footers/quotes are stripped so the model learns from prose, not metadata leakage.</p>
     <div class="price">
       <div class="n">bag → vector</div>
       <div class="l">the core move: turning unbounded, unstructured text into a fixed-length vector a classifier can learn from.</div>
+    </div>
+    <div class="cats">
+      <span class="cat">comp.sys.mac.hardware</span><span class="cat">rec.autos</span><span class="cat">sci.med</span><span class="cat">sci.space</span><span class="cat">talk.politics.guns</span>
     </div>
   </div>
 </section>
@@ -89,14 +105,14 @@
   <div class="wrap">
     <p class="kicker">The stack</p>
     <h2>From raw text to a label</h2>
-    <p class="muted">Two representations, one honest comparison.</p>
+    <p class="muted">Two models, identical features, one honest comparison.</p>
     <div class="grid">
-      <div class="tool"><div class="t">data</div><h3>Labelled corpus</h3><p>Documents tagged with their categories, split into train and test — the ground truth.</p></div>
-      <div class="tool"><div class="t">clean</div><h3>Tokenisation</h3><p>Lowercase, strip noise, split into tokens and remove stopwords so the signal stands out.</p></div>
-      <div class="tool"><div class="t">classic</div><h3>TF-IDF</h3><p>Weight words by how distinctive they are to a document — interpretable and surprisingly strong.</p></div>
-      <div class="tool"><div class="t">modern</div><h3>Embeddings</h3><p>Dense vectors that capture meaning beyond exact words — the contrast case to TF-IDF.</p></div>
-      <div class="tool"><div class="t">model</div><h3>Linear classifier</h3><p>Logistic regression or SVM — fast, solid baselines whose weights you can actually read.</p></div>
-      <div class="tool"><div class="t">evaluate</div><h3>Precision / recall / F1</h3><p>Per-class metrics and a confusion matrix — accuracy alone lies on imbalanced data.</p></div>
+      <div class="tool"><div class="t">data</div><h3>20 Newsgroups</h3><p>A real labelled corpus, 5 categories, split into 2,905 train / 1,935 test documents — the ground truth.</p></div>
+      <div class="tool"><div class="t">clean</div><h3>Strip + tokenise</h3><p>Drop headers, footers and quotes, lowercase, remove English stopwords — so the model reads prose, not metadata.</p></div>
+      <div class="tool"><div class="t">vectorise</div><h3>TF-IDF</h3><p>Weight uni- and bi-grams by how distinctive they are to a document — interpretable and surprisingly strong.</p></div>
+      <div class="tool"><div class="t">model · 1</div><h3>LogisticRegression</h3><p>An L2-regularised linear baseline whose weights you can actually read.</p></div>
+      <div class="tool"><div class="t">model · 2</div><h3>Naive Bayes, from scratch</h3><p>The multinomial event model with Laplace smoothing, written in numpy in log space — no sklearn estimator under the hood.</p></div>
+      <div class="tool"><div class="t">evaluate</div><h3>Precision / recall / F1</h3><p>Per-class metrics and a confusion matrix on the held-out test split — accuracy alone lies.</p></div>
     </div>
   </div>
 </section>
@@ -108,7 +124,7 @@
     <p>Every document follows the same represent-then-decide pipeline:</p>
     <ol class="flow">
       <li><h3>Preprocess</h3><p>Tokenise and clean the raw text into a consistent form.</p></li>
-      <li><h3>Vectorise</h3><p>Turn the document into a fixed-length vector — TF-IDF or embedding.</p></li>
+      <li><h3>Vectorise</h3><p>Turn the document into a fixed-length TF-IDF vector — uni- and bi-grams, stopwords removed.</p></li>
       <li><h3>Train</h3><p>Fit a classifier on the labelled training vectors.</p></li>
       <li><h3>Predict</h3><p>Assign a category to each unseen document.</p></li>
       <li><h3>Evaluate</h3><p>Score per-class performance and read the confusion matrix for blind spots.</p></li>
@@ -118,13 +134,47 @@
 
 <section>
   <div class="wrap">
+    <p class="kicker">Results</p>
+    <h2>Real numbers on the test split</h2>
+    <p>Measured on the 1,935 held-out test documents — not the training data. The random baseline for five balanced classes is 20%. The two models train on identical TF-IDF features; on this slice the from-scratch Naive Bayes actually edges out logistic regression, a reminder that the classic interpretable approach is hard to beat on bag-of-words text.</p>
+    <table class="metrics">
+      <thead><tr><th>Model</th><th style="text-align:right">Accuracy</th><th style="text-align:right">Macro-F1</th></tr></thead>
+      <tbody>
+        <tr><td>TF-IDF + LogisticRegression</td><td class="num">84.91%</td><td class="num">0.8506</td></tr>
+        <tr class="best"><td>Multinomial Naive Bayes <span class="muted">(from scratch)</span></td><td class="num">87.44%</td><td class="num">0.8758</td></tr>
+      </tbody>
+    </table>
+    <figure class="cm">
+      <img src="figures/confusion.png" alt="Confusion matrices for both models on the 20 Newsgroups test split" />
+      <figcaption>Confusion matrices on the held-out test set. Strong diagonals; the main confusion is <code>rec.autos</code> ↔ the science groups, where vocabulary overlaps.</figcaption>
+    </figure>
+    <p class="muted" style="font-size:.88rem;margin-top:18px">Reproduce: <code>pip install -r requirements.txt</code> then <code>python train.py</code>. Numbers above are written to <code>results.json</code> by that run; the test suite asserts they clear a sane floor.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">Try it</p>
+    <h2>Classify a piece of text</h2>
+    <p>Train once, then point <code>predict.py</code> at any text — inline, a file, or piped over stdin. It prints the predicted category and the class probabilities.</p>
+    <pre class="cmd"><span class="c"># train both models, then classify new text</span>
+python train.py
+echo <span class="c">"NASA launched a rocket to study the moon and planets"</span> | python predict.py
+
+<span class="c"># →</span> Predicted category: sci.space
+<span class="c">#    sci.space   99.67%  ##############################</span></pre>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
     <p class="kicker">Reflection</p>
-    <h2>What rebuilding it taught me</h2>
+    <h2>What building it taught me</h2>
     <ul class="learn">
-      <li><b>TF-IDF is hard to beat.</b> On many real tasks a simple, readable linear model on TF-IDF is shockingly close to the fancy alternative — and you can explain it.</li>
-      <li><b>Preprocessing is where accuracy hides.</b> Tokenisation and stopword choices move the score more than the model swap often does.</li>
-      <li><b>Interpretability is a feature.</b> Being able to read which words drove a decision is worth real accuracy in anything that touches people.</li>
-      <li><b>Accuracy is a trap on imbalance.</b> A classifier can score 95% and be useless; per-class F1 keeps you honest.</li>
+      <li><b>Naive Bayes is no toy.</b> Written carefully in log space with Laplace smoothing, it actually beat logistic regression here — the classic bag-of-words approach is genuinely competitive.</li>
+      <li><b>Implementing the maths clarifies it.</b> Coding the multinomial likelihood by hand, then checking it matches sklearn to within 1e-8, taught me more than any tutorial would have.</li>
+      <li><b>Metadata leaks.</b> Leaving the newsgroup headers in inflates accuracy for free; stripping headers, footers and quotes is what makes the numbers honest.</li>
+      <li><b>Accuracy is a trap on imbalance.</b> A classifier can score high and still be useless on a class; per-class F1 and the confusion matrix keep you honest.</li>
       <li><b>Master this, generalise everywhere.</b> Spam, topics, sentiment, routing — once the pipeline is yours, the task just changes labels.</li>
     </ul>
   </div>
@@ -134,7 +184,7 @@
   <div class="wrap">
     <div class="credit">
       <div class="k">About this build</div>
-      <p style="margin:0">An original, from-scratch build by <b>Andrea</b> — written to learn the foundational text-classification pipeline end to end: tokenisation, TF-IDF and embeddings, linear classifiers, and rigorous per-class evaluation. Plain HTML/CSS, deployed on GitHub Pages.</p>
+      <p style="margin:0">An original, from-scratch build by <b>Andrea</b> — written to learn the foundational text-classification pipeline end to end: TF-IDF features, a logistic-regression baseline, a Multinomial Naive Bayes coded in numpy, and rigorous per-class evaluation on real data. Python source on <a href="https://github.com/andreaisabelmontana/document-classifier">GitHub</a>; this page is plain HTML/CSS on GitHub Pages.</p>
     </div>
     <p class="fine">Built from scratch by Andrea · one of an ongoing series of learning builds.</p>
   </div>
